@@ -29,4 +29,12 @@ describe('/api/categories', () => {
         });
       });
   });
+  it('status: 404 - responds with an error message when passed a route that does not exist', () => {
+    return request(app)
+      .get('/api/notAPath')
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe('Invalid Path');
+      });  
+  });
 });

@@ -3,6 +3,7 @@ const request = require('supertest');
 const seed = require('../db/seeds/seed');
 const data = require('../db/data/test-data/index');
 const db = require('../db/connection');
+const { toBeSortedBy, toBeSorted } = require('jest-sorted');
 
 beforeEach(() => {
   return seed(data);
@@ -34,7 +35,7 @@ describe('/api/categories', () => {
       .get('/api/notAPath')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('Invalid Path');
+        expect(body.msg).toBe('Path not found');
       });
   });
 });
@@ -49,6 +50,19 @@ describe('/api/reviews', () => {
         expect(reviews).toBeInstanceOf(Array);
         expect(reviews).toHaveLength(13);
         expect(reviews).toBeSortedBy('created_at', { descending: true });
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
       });
   });
 });

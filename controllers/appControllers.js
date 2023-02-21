@@ -29,9 +29,9 @@ exports.fetchReviewById = (req, res, next) => {
   getReviewById(review_id)
     .then((review) => {
       res.status(200).send({ review });
-      console.log({ review });
     })
     .catch((err) => {
+      console.log(err);
       next(err);
     });
 };

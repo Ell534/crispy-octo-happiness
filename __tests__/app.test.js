@@ -90,4 +90,13 @@ describe('/api/reviews/:review_id', () => {
         }]);
       });
   });
+  it('404: responds with review not found given a valid id that does not exist', () => {
+    return request(app)
+      .get('/api/reviews/20')
+      .expect(404)
+      .then(({body}) => {
+        console.log(body);
+        expect(body.msg).toBe('This review ID does not Exist')
+      })
+  })
 });

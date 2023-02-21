@@ -19,3 +19,18 @@ exports.getAllReviews = () => {
       return reviews;
     });
 };
+
+exports.getReviewById = (review_id) => {
+  return db
+    .query(
+      `SELECT 
+  review_id, title, review_body, designer,
+  review_img_url, votes, category, owner, created_at
+  FROM reviews
+  WHERE review_id = $1;`,
+      [review_id]
+    )
+    .then(({ rows: review }) => {
+      return review;
+    });
+};

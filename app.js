@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { fetchAllCategories, fetchAllReviews } = require('./controllers/appControllers');
+const { fetchAllCategories, fetchAllReviews, fetchReviewById } = require('./controllers/appControllers');
 const {
   handle500Code,
   handle404PathNotFound,
@@ -10,6 +10,8 @@ const {
 app.get('/api/categories', fetchAllCategories);
 
 app.get('/api/reviews', fetchAllReviews);
+
+app.get('/api/reviews/:review_id', fetchReviewById);
 
 
 app.use(handle404PathNotFound);

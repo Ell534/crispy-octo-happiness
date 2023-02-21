@@ -13,7 +13,7 @@ afterAll(() => {
 });
 
 describe('/api/categories', () => {
-  it('200: GET responds with an array of all cateory objects with the properties slug and description', () => {
+  it('200: GET responds with an array of all category objects with the properties slug and description', () => {
     return request(app)
       .get('/api/categories')
       .expect(200)
@@ -33,8 +33,22 @@ describe('/api/categories', () => {
     return request(app)
       .get('/api/notAPath')
       .expect(404)
-      .then(({body}) => {
+      .then(({ body }) => {
         expect(body.msg).toBe('Invalid Path');
-      });  
+      });
+  });
+});
+
+describe('/api/reviews', () => {
+  it('200: GET responds with an array of review objects sorted by descending date', () => {
+    return request(app)
+      .get('/api/reviews')
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy('created_at', { descending: true });
+      });
   });
 });

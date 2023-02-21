@@ -3,6 +3,7 @@ const request = require('supertest');
 const seed = require('../db/seeds/seed');
 const data = require('../db/data/test-data/index');
 const db = require('../db/connection');
+const { toBeSortedBy, toBeSorted } = require('jest-sorted');
 
 beforeEach(() => {
   return seed(data);
@@ -13,7 +14,7 @@ afterAll(() => {
 });
 
 describe('/api/categories', () => {
-  it('200: GET responds with an array of all cateory objects with the properties slug and description', () => {
+  it('200: GET responds with an array of all category objects with the properties slug and description', () => {
     return request(app)
       .get('/api/categories')
       .expect(200)
@@ -33,8 +34,35 @@ describe('/api/categories', () => {
     return request(app)
       .get('/api/notAPath')
       .expect(404)
-      .then(({body}) => {
-        expect(body.msg).toBe('Invalid Path');
-      });  
+      .then(({ body }) => {
+        expect(body.msg).toBe('Path not found');
+      });
+  });
+});
+
+describe('/api/reviews', () => {
+  it('200: GET responds with an array of review objects sorted by descending date', () => {
+    return request(app)
+      .get('/api/reviews')
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy('created_at', { descending: true });
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
   });
 });

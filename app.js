@@ -1,17 +1,18 @@
 const express = require('express');
 const app = express();
-const { fetchAllCategories } = require('./controllers/appControllers');
+const { fetchAllCategories, fetchAllReviews } = require('./controllers/appControllers');
 const {
   handle500Code,
-  handle404Code,
+  handle404PathNotFound,
 } = require('./controllers/errorControllers');
 
 
 app.get('/api/categories', fetchAllCategories);
 
+app.get('/api/reviews', fetchAllReviews);
 
-app.use(handle404Code);
+
+app.use(handle404PathNotFound);
 app.use(handle500Code);
 
 module.exports = app;
-// app.all('*', handle404Code); ignore

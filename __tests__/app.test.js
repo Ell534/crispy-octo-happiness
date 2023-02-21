@@ -103,7 +103,6 @@ describe('/api/reviews/:review_id', () => {
       .get('/api/reviews/banana')
       .expect(400)
       .then(({body}) => {
-        console.log(body);
         expect(body.msg).toBe('Bad Request')
       })
   });

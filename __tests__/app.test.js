@@ -95,8 +95,16 @@ describe('/api/reviews/:review_id', () => {
       .get('/api/reviews/20')
       .expect(404)
       .then(({body}) => {
-        console.log(body);
         expect(body.msg).toBe('This review ID does not Exist')
       })
   })
+  it('400: responds with bad request when given an id that is not a number', () => {
+    return request(app)
+      .get('/api/reviews/banana')
+      .expect(400)
+      .then(({body}) => {
+        console.log(body);
+        expect(body.msg).toBe('Bad Request')
+      })
+  });
 });

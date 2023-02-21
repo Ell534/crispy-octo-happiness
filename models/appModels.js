@@ -32,7 +32,6 @@ exports.getReviewById = (review_id) => {
     )
     .then((result) => {
       if (result.rowCount === 0) {
-        console.log(result.rowCount);
         return Promise.reject('review id not present');
       }
       const { rows: review } = result;

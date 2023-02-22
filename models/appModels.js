@@ -48,7 +48,11 @@ exports.getCommentsByReviewId = (reviewId) => {
       ORDER BY created_at DESC;`,
       [reviewId]
     )
-    .then(({ rows: comments }) => {
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject('review id not present')
+      }
+      const { rows: comments } = result
       return comments;
     });
 };

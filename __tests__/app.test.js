@@ -30,7 +30,7 @@ describe('/api/categories', () => {
         });
       });
   });
-  it('status: 404 - responds with an error message when passed a route that does not exist', () => {
+  it('404: responds with an error message when passed a route that does not exist', () => {
     return request(app)
       .get('/api/notAPath')
       .expect(404)
@@ -67,31 +67,8 @@ describe('/api/reviews', () => {
   });
 });
 
-describe('/api/reviews/:review_id/comments', () => {
-  it('200: GET responds with an array of comments for the given review id, sorted by most recent comment first', () => {
-    return request(app)
-      .get('/api/reviews/2/comments')
-      .expect(200)
-      .then(({ body }) => {
-        const { comments } = body;
-        expect(comments).toBeInstanceOf(Array);
-        expect(comments).toHaveLength(3);
-        expect(comments).toBeSortedBy('created_at', { descending: true });
-        comments.forEach((comment) => {
-          expect(comment).toMatchObject({
-            comment_id: expect.any(Number),
-            votes: expect.any(Number),
-            created_at: expect.any(String),
-            author: expect.any(String),
-            body: expect.any(String),
-            review_id: expect.any(Number),
-          });
-        });
-      });
-  });
-});
 describe('/api/reviews/:review_id', () => {
-  it('responds with a review object with corresponding id from path', () => {
+  it('200: GET responds with a review object with corresponding id from path', () => {
     return request(app)
       .get('/api/reviews/1')
       .expect(200)
@@ -120,7 +97,7 @@ describe('/api/reviews/:review_id', () => {
       .get('/api/reviews/20')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('This review ID does not Exist');
+        expect(body.msg).toBe('This review ID does not exist');
       });
   });
   it('400: responds with bad request when given an id that is not a number', () => {
@@ -129,6 +106,38 @@ describe('/api/reviews/:review_id', () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe('Bad Request');
+      });
+  });
+});
+
+describe('/api/reviews/:review_id/comments', () => {
+  it('200: GET responds with an array of comments for the given review id, sorted by most recent comment first', () => {
+    return request(app)
+      .get('/api/reviews/2/comments')
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(3);
+        expect(comments).toBeSortedBy('created_at', { descending: true });
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  it('404: responds with review not found given a valid id that does not exist', () => {
+    return request(app)
+      .get('/api/reviews/20/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('This review ID does not exist')
       });
   });
 });

@@ -38,3 +38,14 @@ exports.getReviewById = (review_id) => {
       return review;
     });
 };
+
+exports.postCommentByReviewId = (review_id, username, body) => {
+  return db.query(
+    `INSERT INTO comments (body, review_id, author)
+    VALUES 
+    ($1, $2, $3) RETURNING *;`, [body, review_id, username]
+  ).then(({rows}) => {
+    console.log(rows);
+    return rows[0];
+  })
+};

@@ -4,6 +4,7 @@ const {
   fetchAllCategories,
   fetchAllReviews,
   fetchReviewById,
+  sendCommentByReviewId,
 } = require('./controllers/appControllers');
 const {
   handle500Code,
@@ -12,11 +13,15 @@ const {
   handlePSQL400s,
 } = require('./controllers/errorControllers');
 
+app.use(express.json());
+
 app.get('/api/categories', fetchAllCategories);
 
 app.get('/api/reviews', fetchAllReviews);
 
 app.get('/api/reviews/:review_id', fetchReviewById);
+
+app.post('/api/reviews/:review_id/comments', sendCommentByReviewId);
 
 app.use(handleCustomErrors);
 app.use(handlePSQL400s);

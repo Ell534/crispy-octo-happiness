@@ -76,34 +76,62 @@ describe('/api/reviews/:review_id', () => {
         const { review } = body;
         expect(review).toBeInstanceOf(Array);
         expect(review).toHaveLength(1);
-        expect(review).toMatchObject([{
-          review_id: 1,
-          title: 'Agricola',
-          review_body: 'Farmyard fun!',
-          designer: 'Uwe Rosenberg',
-          review_img_url:
-            'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
-          votes: 1,
-          category: 'euro game',
-          owner: 'mallionaire',
-          created_at: '2021-01-18T10:00:20.514Z',
-        }]);
+        expect(review).toMatchObject([
+          {
+            review_id: 1,
+            title: 'Agricola',
+            review_body: 'Farmyard fun!',
+            designer: 'Uwe Rosenberg',
+            review_img_url:
+              'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+            votes: 1,
+            category: 'euro game',
+            owner: 'mallionaire',
+            created_at: '2021-01-18T10:00:20.514Z',
+          },
+        ]);
       });
   });
   it('404: responds with review not found given a valid id that does not exist', () => {
     return request(app)
       .get('/api/reviews/20')
       .expect(404)
-      .then(({body}) => {
-        expect(body.msg).toBe('This review ID does not Exist')
-      })
-  })
+      .then(({ body }) => {
+        expect(body.msg).toBe('This review ID does not Exist');
+      });
+  });
   it('400: responds with bad request when given an id that is not a number', () => {
     return request(app)
       .get('/api/reviews/banana')
       .expect(400)
-      .then(({body}) => {
-        expect(body.msg).toBe('Bad Request')
-      })
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+});
+
+describe('POST: /api/reviews/:review_id/comments', () => {
+  it('201: request body accepts an object with username and body, responds with the posted comment', () => {
+    const requestBody = {
+      username: 'mallionaire',
+      body: 'This game is fantastic!',
+    };
+    return request(app)
+      .post('/api/reviews/1/comments')
+      .send(requestBody)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toBeInstanceOf(Object);
+        expect(comment).toMatchObject({
+          comment_id: 7,
+          body: 'This game is fantastic!',
+          review_id: 1,
+          author: 'mallionaire',
+          votes: 0,
+          created_at: expect.any(String),
+        });
+        console.log(comment);
+      });
   });
 });

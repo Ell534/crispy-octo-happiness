@@ -90,3 +90,45 @@ describe('/api/reviews/:review_id/comments', () => {
       });
   });
 });
+describe('/api/reviews/:review_id', () => {
+  it('responds with a review object with corresponding id from path', () => {
+    return request(app)
+      .get('/api/reviews/1')
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toBeInstanceOf(Array);
+        expect(review).toHaveLength(1);
+        expect(review).toMatchObject([
+          {
+            review_id: 1,
+            title: 'Agricola',
+            review_body: 'Farmyard fun!',
+            designer: 'Uwe Rosenberg',
+            review_img_url:
+              'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+            votes: 1,
+            category: 'euro game',
+            owner: 'mallionaire',
+            created_at: '2021-01-18T10:00:20.514Z',
+          },
+        ]);
+      });
+  });
+  it('404: responds with review not found given a valid id that does not exist', () => {
+    return request(app)
+      .get('/api/reviews/20')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('This review ID does not Exist');
+      });
+  });
+  it('400: responds with bad request when given an id that is not a number', () => {
+    return request(app)
+      .get('/api/reviews/banana')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+});

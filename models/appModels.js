@@ -20,16 +20,35 @@ exports.getAllReviews = () => {
     });
 };
 
+exports.getReviewById = (review_id) => {
+  return db
+    .query(
+      `SELECT 
+    review_id, title, review_body, designer,
+    review_img_url, votes, category, owner, created_at
+    FROM reviews
+    WHERE review_id = $1;`,
+      [review_id]
+    )
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject('review id not present');
+      }
+      const { rows: review } = result;
+      return review;
+    });
+};
+
 exports.getCommentsByReviewId = (reviewId) => {
   return db
     .query(
       `SELECT *
-    FROM comments
-    WHERE review_id = $1
-    ORDER BY created_at DESC;`,
+      FROM comments
+      WHERE review_id = $1
+      ORDER BY created_at DESC;`,
       [reviewId]
     )
-    .then(({rows : comments}) => {
+    .then(({ rows: comments }) => {
       return comments;
     });
 };

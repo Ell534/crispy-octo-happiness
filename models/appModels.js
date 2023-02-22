@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+const checkExists = require('../db/data/dataUtils');
 
 exports.getAllCategories = () => {
   return db.query(`SELECT * FROM categories;`).then(({ rows: categories }) => {
@@ -32,7 +33,7 @@ exports.getReviewById = (review_id) => {
     )
     .then((result) => {
       if (result.rowCount === 0) {
-        return Promise.reject('review id not present');
+        return Promise.reject('id not present');
       }
       const { rows: review } = result;
       return review;
@@ -43,16 +44,24 @@ exports.getCommentsByReviewId = (reviewId) => {
   return db
     .query(
       `SELECT *
-      FROM comments
-      WHERE review_id = $1
-      ORDER BY created_at DESC;`,
+      FROM reviews
+      WHERE review_id = $1;`,
       [reviewId]
     )
     .then((result) => {
       if (result.rowCount === 0) {
-        return Promise.reject('review id not present')
+        return Promise.reject('id not present');
       }
-      const { rows: comments } = result
-      return comments;
+      return db
+        .query(
+          `SELECT *
+      FROM comments
+      WHERE review_id = $1
+      ORDER BY created_at DESC;`,
+          [reviewId]
+        )
+        .then(({ rows: comments }) => {
+          return comments;
+        });
     });
 };

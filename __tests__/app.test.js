@@ -132,12 +132,31 @@ describe('/api/reviews/:review_id/comments', () => {
         });
       });
   });
+  it('200: responds with empty array when passed a valid review id that exists but has no comments', () => {
+    return request(app)
+      .get('/api/reviews/1/comments')
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
+        expect(comments).toEqual([]);
+      });
+  });
   it('404: responds with review not found given a valid id that does not exist', () => {
     return request(app)
       .get('/api/reviews/20/comments')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('This review ID does not exist')
+        expect(body.msg).toBe('This review ID does not exist');
+      });
+  });
+  it('400: responds with bad request when given an id that is not a number  ', () => {
+    return request(app)
+      .get('/api/reviews/banana/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
       });
   });
 });

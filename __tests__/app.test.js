@@ -66,3 +66,27 @@ describe('/api/reviews', () => {
       });
   });
 });
+
+describe('/api/reviews/:review_id/comments', () => {
+  it('200: GET responds with an array of comments for the given review id, sorted by most recent comment first', () => {
+    return request(app)
+      .get('/api/reviews/2/comments')
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(3);
+        expect(comments).toBeSortedBy('created_at', { descending: true });
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: expect.any(Number),
+          });
+        });
+      });
+  });
+});

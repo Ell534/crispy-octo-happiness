@@ -19,3 +19,17 @@ exports.getAllReviews = () => {
       return reviews;
     });
 };
+
+exports.getCommentsByReviewId = (reviewId) => {
+  return db
+    .query(
+      `SELECT *
+    FROM comments
+    WHERE review_id = $1
+    ORDER BY created_at DESC;`,
+      [reviewId]
+    )
+    .then(({rows : comments}) => {
+      return comments;
+    });
+};

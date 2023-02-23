@@ -69,12 +69,24 @@ exports.getCommentsByReviewId = (reviewId) => {
 exports.postCommentByReviewId = (review_id, username, body) => {
   return db
     .query(
-      `INSERT INTO comments (body, review_id, author)
-        VALUES 
-        ($1, $2, $3) RETURNING *;`,
-      [body, review_id, username]
+      `SELECT *
+    FROM reviews
+    WHERE review_id = $1;`,
+      [review_id]
     )
-    .then(({ rows }) => {
-      return rows[0];
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject('id not present');
+      }
+      return db
+        .query(
+          `INSERT INTO comments (body, review_id, author)
+          VALUES 
+          ($1, $2, $3) RETURNING *;`,
+          [body, review_id, username]
+        )
+        .then(({ rows }) => {
+          return rows[0];
+        });
     });
 };

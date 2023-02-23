@@ -198,4 +198,30 @@ describe('POST: /api/reviews/:review_id/comments', () => {
         expect(body.msg).toBe('Invalid User');
       });
   });
+  it('400: invalid review id', () => {
+    const requestBody = {
+      username: 'mallionaire',
+      body: 'This game is fantastic!',
+    };
+    return request(app)
+      .post('/api/reviews/banana/comments')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  })
+  it('404: review id not found', () => {
+    const requestBody = {
+      username: 'mallionaire',
+      body: 'This game is fantastic!',
+    };
+    return request(app)
+      .post('/api/reviews/20/comments')
+      .send(requestBody)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('This review ID does not exist');
+      });
+  });
 });

@@ -288,12 +288,12 @@ describe('PATCH /api/reviews/:review_id', () => {
         expect(body.msg).toBe('Bad Request');
       });
   });
-  it('404: valid id but not in the db', () => {
+  it('404: non-existent id', () => {
     const requestBody = {
       inc_votes: 10,
     };
     return request(app)
-      .patch('/api/reviews/100')
+      .patch('/api/reviews/9999')
       .send(requestBody)
       .expect(404)
       .then(({ body }) => {

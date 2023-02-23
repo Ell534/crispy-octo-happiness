@@ -37,26 +37,22 @@ exports.fetchReviewById = (req, res, next) => {
     });
 };
 
-
 exports.fetchCommentsByReviewId = (req, res, next) => {
   const { review_id } = req.params;
   getCommentsByReviewId(review_id)
-  .then((comments) => {
-    res.status(200).send({ comments });
-  })
-  .catch((err) => {
-    next(err);
-  });
+    .then((comments) => {
+      res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.sendCommentByReviewId = (req, res, next) => {
   const { review_id } = req.params;
-  console.log(req.params);
   const { username, body } = req.body;
-  console.log(req.body);
   postCommentByReviewId(review_id, username, body)
     .then((comment) => {
-      console.log(comment);
       res.status(201).send({ comment });
     })
     .catch((err) => {

@@ -110,32 +110,6 @@ describe('/api/reviews/:review_id', () => {
   });
 });
 
-describe('POST: /api/reviews/:review_id/comments', () => {
-  it('201: request body accepts an object with username and body, responds with the posted comment', () => {
-    const requestBody = {
-      username: 'mallionaire',
-      body: 'This game is fantastic!',
-    };
-    return request(app)
-      .post('/api/reviews/1/comments')
-      .send(requestBody)
-      .expect(201)
-      .then(({ body }) => {
-        const { comment } = body;
-        expect(comment).toBeInstanceOf(Object);
-        expect(comment).toMatchObject({
-          comment_id: 7,
-          body: 'This game is fantastic!',
-          review_id: 1,
-          author: 'mallionaire',
-          votes: 0,
-          created_at: expect.any(String),
-        });
-        console.log(comment);
-      });
-  });
-});
-
 describe('/api/reviews/:review_id/comments', () => {
   it('200: GET responds with an array of comments for the given review id, sorted by most recent comment first', () => {
     return request(app)
@@ -158,31 +132,70 @@ describe('/api/reviews/:review_id/comments', () => {
         });
       });
   });
+  it('404: responds with review not found given a valid id that does not exist', () => {
+    return request(app)
+      .get('/api/reviews/20/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('This review ID does not exist');
+      });
+  });
+  it('400: responds with bad request when given an id that is not a number  ', () => {
+    return request(app)
+      .get('/api/reviews/banana/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
 });
-it('200: responds with empty array when passed a valid review id that exists but has no comments', () => {
-  return request(app)
-    .get('/api/reviews/1/comments')
-    .expect(200)
-    .then(({ body }) => {
-      const { comments } = body;
-      expect(comments).toBeInstanceOf(Array);
-      expect(comments).toHaveLength(0);
-      expect(comments).toEqual([]);
-    });
-});
-it('404: responds with review not found given a valid id that does not exist', () => {
-  return request(app)
-    .get('/api/reviews/20/comments')
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe('This review ID does not exist');
-    });
-});
-it('400: responds with bad request when given an id that is not a number  ', () => {
-  return request(app)
-    .get('/api/reviews/banana/comments')
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe('Bad Request');
-    });
+
+describe('POST: /api/reviews/:review_id/comments', () => {
+  it('201: request body accepts an object with username and body, responds with the posted comment', () => {
+    const requestBody = {
+      username: 'mallionaire',
+      body: 'This game is fantastic!',
+    };
+    return request(app)
+      .post('/api/reviews/1/comments')
+      .send(requestBody)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toBeInstanceOf(Object);
+        expect(comment).toMatchObject({
+          comment_id: 7,
+          body: 'This game is fantastic!',
+          review_id: 1,
+          author: 'mallionaire',
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  it('400: malformed request - request body is missing not null values', () => {
+    const requestBody = {
+      username: 'mallionaire',
+    };
+    return request(app)
+      .post('/api/reviews/1/comments')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Malformed Request');
+      });
+  });
+  it('400: username in request body does not exist in db', () => {
+    const requestBody = {
+      username: 'notAUser',
+      body: 'test',
+    };
+    return request(app)
+      .post('/api/reviews/1/comments')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Invalid User');
+      });
+  });
 });

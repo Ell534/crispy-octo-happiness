@@ -75,7 +75,6 @@ exports.postCommentByReviewId = (review_id, username, body) => {
       [body, review_id, username]
     )
     .then(({ rows }) => {
-      console.log(rows);
       return rows[0];
     });
 };

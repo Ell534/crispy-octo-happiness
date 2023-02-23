@@ -11,8 +11,8 @@ exports.handlePSQL400s = (err, req, res, next) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-  if (err === 'review id not present') {
-    res.status(404).send({ msg: 'This review ID does not Exist' });
+  if (err === 'id not present') {
+    res.status(404).send({ msg: 'This review ID does not exist' });
   } else {
     next(err);
   }

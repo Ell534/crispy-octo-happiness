@@ -2,6 +2,7 @@ const {
   getAllCategories,
   getAllReviews,
   getReviewById,
+  getCommentsByReviewId,
   postCommentByReviewId,
 } = require('../models/appModels');
 
@@ -34,6 +35,18 @@ exports.fetchReviewById = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+
+exports.fetchCommentsByReviewId = (req, res, next) => {
+  const { review_id } = req.params;
+  getCommentsByReviewId(review_id)
+  .then((comments) => {
+    res.status(200).send({ comments });
+  })
+  .catch((err) => {
+    next(err);
+  });
 };
 
 exports.sendCommentByReviewId = (req, res, next) => {

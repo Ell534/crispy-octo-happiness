@@ -6,6 +6,7 @@ const {
   fetchAllReviews,
   fetchReviewById,
   fetchCommentsByReviewId,
+  sendCommentByReviewId,
   updateReviewById,
 } = require('./controllers/appControllers');
 
@@ -16,7 +17,7 @@ const {
   handlePSQL400s,
 } = require('./controllers/errorControllers');
 
-app.use(express.json())
+app.use(express.json());
 
 app.get('/api/categories', fetchAllCategories);
 
@@ -25,6 +26,8 @@ app.get('/api/reviews', fetchAllReviews);
 app.get('/api/reviews/:review_id', fetchReviewById);
 
 app.get('/api/reviews/:review_id/comments', fetchCommentsByReviewId);
+
+app.post('/api/reviews/:review_id/comments', sendCommentByReviewId);
 
 app.patch('/api/reviews/:review_id', updateReviewById);
 

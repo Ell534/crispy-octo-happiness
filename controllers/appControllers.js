@@ -3,6 +3,7 @@ const {
   getAllReviews,
   getReviewById,
   getCommentsByReviewId,
+  postCommentByReviewId,
   patchReviewById,
 } = require('../models/appModels');
 
@@ -54,6 +55,18 @@ exports.updateReviewById = (req, res, next) => {
   patchReviewById(inc_votes, review_id)
     .then((review) => {
       res.status(200).send({ review });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.sendCommentByReviewId = (req, res, next) => {
+  const { review_id } = req.params;
+  const { username, body } = req.body;
+  postCommentByReviewId(review_id, username, body)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);

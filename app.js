@@ -4,6 +4,7 @@ const app = express();
 const {
   fetchAllCategories,
   fetchAllReviews,
+  fetchAllUsers,
   fetchReviewById,
   fetchCommentsByReviewId,
   sendCommentByReviewId,
@@ -22,6 +23,8 @@ app.use(express.json());
 app.get('/api/categories', fetchAllCategories);
 
 app.get('/api/reviews', fetchAllReviews);
+
+app.get('/api/users', fetchAllUsers);
 
 app.get('/api/reviews/:review_id', fetchReviewById);
 

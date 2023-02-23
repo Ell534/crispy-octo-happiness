@@ -1,6 +1,7 @@
 const {
   getAllCategories,
   getAllReviews,
+  getAllUsers,
   getReviewById,
   getCommentsByReviewId,
   postCommentByReviewId,
@@ -21,6 +22,16 @@ exports.fetchAllReviews = (req, res, next) => {
   getAllReviews()
     .then((reviews) => {
       res.status(200).send({ reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.fetchAllUsers = (req, res, next) => {
+  getAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch((err) => {
       next(err);

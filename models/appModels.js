@@ -21,6 +21,12 @@ exports.getAllReviews = () => {
     });
 };
 
+exports.getAllUsers = () => {
+  return db.query(`SELECT * FROM users;`).then(({ rows: users }) => {
+    return users;
+  });
+};
+
 exports.getReviewById = (review_id) => {
   return db
     .query(

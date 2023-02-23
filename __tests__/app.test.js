@@ -161,7 +161,7 @@ describe('/api/reviews/:review_id/comments', () => {
   });
 });
 
-describe.only('PATCH /api/reviews/:review_id', () => {
+describe('PATCH /api/reviews/:review_id', () => {
   it('200: responds with the updated review', () => {
     const requestBody = {
       inc_votes: 10,

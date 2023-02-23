@@ -93,15 +93,22 @@ exports.postCommentByReviewId = (review_id, username, body) => {
 
 exports.patchReviewById = (inc_votes, review_id) => {
   return db
-    .query(
-      `UPDATE reviews
-        SET 
-        votes = votes + $1
-        WHERE review_id = $2
-        RETURNING *`,
-      [inc_votes, review_id]
-    )
-    .then(({ rows }) => {
-      return rows[0];
+    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
+    .then((result) => {
+      if (result.rowCount === 0) {
+        return Promise.reject('id not present');
+      }
+      return db
+        .query(
+          `UPDATE reviews
+      SET 
+      votes = votes + $1
+      WHERE review_id = $2
+      RETURNING *`,
+          [inc_votes, review_id]
+        )
+        .then(({ rows }) => {
+          return rows[0];
+        });
     });
 };

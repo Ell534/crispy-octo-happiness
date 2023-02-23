@@ -252,4 +252,52 @@ describe('PATCH /api/reviews/:review_id', () => {
         });
       });
   });
+  it('400: malformed request - request body is missing not null values', () => {
+    const requestBody = {
+      inc_votes: null,
+    };
+    return request(app)
+      .patch('/api/reviews/1')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Malformed Request');
+      });
+  });
+  it('400: invalid review id', () => {
+    const requestBody = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch('/api/reviews/banana')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+  it('400: incorrect datatype in req body', () => {
+    const requestBody = {
+      inc_votes: 'word',
+    };
+    return request(app)
+      .patch('/api/reviews/1')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+  it('404: valid id but not in the db', () => {
+    const requestBody = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch('/api/reviews/100')
+      .send(requestBody)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('This review ID does not exist');
+      });
+  });
 });

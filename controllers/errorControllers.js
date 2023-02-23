@@ -17,6 +17,12 @@ exports.handlePSQL400s = (err, req, res, next) => {
 exports.handleCustomErrors = (err, req, res, next) => {
   if (err === 'id not present') {
     res.status(404).send({ msg: 'This review ID does not exist' });
+  } else if (err === 'no category') {
+    res.status(404).send({ msg: 'This category does not exist' });
+  } else if (err === 'invalid sort query') {
+    res.status(400).send({ msg: 'Bad Request' });
+  } else if (err === 'invalid order query') {
+    res.status(400).send({ msg: 'Bad Request' });
   } else {
     next(err);
   }

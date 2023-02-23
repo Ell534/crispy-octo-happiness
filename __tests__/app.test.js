@@ -65,6 +65,43 @@ describe('/api/reviews', () => {
         });
       });
   });
+  it('200: GET should accept queries to select reviews by category specified, sort_by given column and order by asc or desc', () => {
+    return request(app)
+      .get(
+        '/api/reviews?category=social deduction&sort_by=reviews.votes&order=asc'
+      )
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toBeInstanceOf(Array);
+        expect(reviews).toHaveLength(11);
+        expect(reviews).toBeSortedBy('votes');
+      });
+  });
+  it('404: category does not exist when given a valid but non existent category', () => {
+    return request(app)
+      .get('/api/reviews?category=banana&sort_by=reviews.votes&order=asc')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('This category does not exist');
+      });
+  });
+  it('400: sort_by query is not valid', () => {
+    return request(app)
+      .get('/api/reviews?category=social deduction&sort_by=banana&order=asc')
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  });
+  it('400: order query is not valid', () => {
+    return request(app)
+      .get('/api/reviews?category=social deduction&sort_by=title&order=banana')
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('Bad Request')
+      })
+  });
 });
 
 describe('/api/reviews/:review_id', () => {

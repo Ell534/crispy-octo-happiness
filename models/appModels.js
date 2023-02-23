@@ -1,5 +1,5 @@
 const db = require('../db/connection');
-const checkExists = require('../db/data/dataUtils');
+// const checkExists = require('../db/data/dataUtils');
 
 exports.getAllCategories = () => {
   return db.query(`SELECT * FROM categories;`).then(({ rows: categories }) => {
@@ -7,19 +7,76 @@ exports.getAllCategories = () => {
   });
 };
 
-exports.getAllReviews = () => {
-  return db
-    .query(
-      `SELECT owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, CAST(COUNT(comment_id) AS INT) AS comment_count FROM reviews
-  LEFT JOIN comments
-  ON comments.review_id = reviews.review_id
-  GROUP BY reviews.review_id
-  ORDER BY reviews.created_at DESC;`
-    )
-    .then(({ rows: reviews }) => {
-      return reviews;
+exports.getAllReviews = (
+  category,
+  sort_by = 'reviews.created_at',
+  order = 'desc'
+) => {
+  return db.query(`SELECT slug FROM categories;`).then(({ rows }) => {
+    const validCategories = rows.map((row) => {
+      return row.slug;
     });
+    if (
+      ![
+        'owner',
+        'title',
+        'reviews.review_id',
+        'category',
+        'review_img_url',
+        'reviews.created_at',
+        'reviews.votes',
+        'designer',
+      ].includes(sort_by)
+    ) {
+      return Promise.reject('invalid sort query');
+    }
+    if (!['asc', 'desc'].includes(order)) {
+      return Promise.reject('invalid order query');
+    }
+    if (!validCategories.includes(category) && category) {
+      return Promise.reject('no category');
+    } else if (!category) {
+      return db
+        .query(
+          `SELECT owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, CAST(COUNT(comment_id) AS INT) AS comment_count FROM reviews
+        LEFT JOIN comments
+        ON comments.review_id = reviews.review_id
+        GROUP BY reviews.review_id
+        ORDER BY ${sort_by} ${order};
+        `
+        )
+        .then(({ rows: reviews }) => {
+          return reviews;
+        });
+    } else {
+      return db
+        .query(
+          `SELECT owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, CAST(COUNT(comment_id) AS INT) AS comment_count FROM reviews
+        LEFT JOIN comments
+        ON comments.review_id = reviews.review_id
+        WHERE category = $1
+        GROUP BY reviews.review_id
+        ORDER BY ${sort_by} ${order};
+        `,
+          [category]
+        )
+        .then(({ rows: reviews }) => {
+          return reviews;
+        });
+    }
+  });
 };
+// return db
+//   .query(
+//     `SELECT owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, CAST(COUNT(comment_id) AS INT) AS comment_count FROM reviews
+// LEFT JOIN comments
+// ON comments.review_id = reviews.review_id
+// GROUP BY reviews.review_id
+// ORDER BY reviews.created_at DESC;`
+//   )
+//   .then(({ rows: reviews }) => {
+//     return reviews;
+//   });
 
 exports.getAllUsers = () => {
   return db.query(`SELECT * FROM users;`).then(({ rows: users }) => {

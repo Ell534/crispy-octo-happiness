@@ -210,7 +210,7 @@ describe('POST: /api/reviews/:review_id/comments', () => {
       .then(({ body }) => {
         expect(body.msg).toBe('Bad Request');
       });
-  })
+  });
   it('404: review id not found', () => {
     const requestBody = {
       username: 'mallionaire',
@@ -218,6 +218,82 @@ describe('POST: /api/reviews/:review_id/comments', () => {
     };
     return request(app)
       .post('/api/reviews/20/comments')
+      .send(requestBody)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('This review ID does not exist');
+      });
+  });
+});
+
+describe('PATCH /api/reviews/:review_id', () => {
+  it('200: responds with the updated review', () => {
+    const requestBody = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch('/api/reviews/1')
+      .send(requestBody)
+      .expect(200)
+      .then(({ body }) => {
+        const { review } = body;
+        expect(review).toBeInstanceOf(Object);
+        expect(review).toMatchObject({
+          review_id: 1,
+          title: 'Agricola',
+          category: 'euro game',
+          designer: 'Uwe Rosenberg',
+          owner: 'mallionaire',
+          review_body: 'Farmyard fun!',
+          review_img_url:
+            'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+          created_at: '2021-01-18T10:00:20.514Z',
+          votes: 11,
+        });
+      });
+  });
+  it('400: malformed request - request body is missing not null values', () => {
+    const requestBody = {
+      inc_votes: null,
+    };
+    return request(app)
+      .patch('/api/reviews/1')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Malformed Request');
+      });
+  });
+  it('400: invalid review id', () => {
+    const requestBody = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch('/api/reviews/banana')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+  it('400: incorrect datatype in req body', () => {
+    const requestBody = {
+      inc_votes: 'word',
+    };
+    return request(app)
+      .patch('/api/reviews/1')
+      .send(requestBody)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+  it('404: non-existent id', () => {
+    const requestBody = {
+      inc_votes: 10,
+    };
+    return request(app)
+      .patch('/api/reviews/9999')
       .send(requestBody)
       .expect(404)
       .then(({ body }) => {

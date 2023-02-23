@@ -1,10 +1,13 @@
 const express = require('express');
 const app = express();
+
 const {
   fetchAllCategories,
   fetchAllReviews,
   fetchReviewById,
+  fetchCommentsByReviewId,
 } = require('./controllers/appControllers');
+
 const {
   handle500Code,
   handle404PathNotFound,
@@ -17,6 +20,8 @@ app.get('/api/categories', fetchAllCategories);
 app.get('/api/reviews', fetchAllReviews);
 
 app.get('/api/reviews/:review_id', fetchReviewById);
+
+app.get('/api/reviews/:review_id/comments', fetchCommentsByReviewId);
 
 app.use(handleCustomErrors);
 app.use(handlePSQL400s);

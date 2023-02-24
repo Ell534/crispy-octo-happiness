@@ -161,5 +161,8 @@ exports.patchReviewById = (inc_votes, review_id) => {
 };
 
 exports.deleteCommentById = (comment_id) => {
-  return db.query()
+  return db.query(`DELETE FROM comments
+  WHERE comment_id = $1;`, [comment_id]).then(() => {
+    return null
+  })
 }

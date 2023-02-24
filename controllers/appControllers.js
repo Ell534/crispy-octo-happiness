@@ -6,7 +6,7 @@ const {
   getCommentsByReviewId,
   postCommentByReviewId,
   patchReviewById,
-  deleteReviewById,
+  deleteCommentById,
 } = require('../models/appModels');
 
 exports.fetchAllCategories = (req, res, next) => {
@@ -88,7 +88,7 @@ exports.updateReviewById = (req, res, next) => {
 
 exports.removeCommentById = (req, res, next) => {
   const { comment_id } = req.params;
-  deleteReviewById(comment_id)
+  deleteCommentById(comment_id)
     .then(() => {
       res.status(204).send();
     })

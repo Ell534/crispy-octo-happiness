@@ -377,13 +377,13 @@ describe('GET /api/users', () => {
   });
 });
 
-describe.skip('DELETE /api/comments/:comment_id', () => {
+describe.only('DELETE /api/comments/:comment_id', () => {
   it('204: deletes the comment specified by comment_id', () => {
     return request(app)
-      .delete('/api/comments/')
+      .delete('/api/comments/1')
       .expect(204)
       .then(({body}) => {
-        expect(body).toBe(undefined);
+        expect(body.rows).toBe(undefined);
       })
   });
 });

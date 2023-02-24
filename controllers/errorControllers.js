@@ -19,10 +19,12 @@ exports.handleCustomErrors = (err, req, res, next) => {
     res.status(404).send({ msg: 'This review ID does not exist' });
   } else if (err === 'no category') {
     res.status(404).send({ msg: 'This category does not exist' });
+  } else if (err === 'invalid category') {
+    res.status(400).send({ msg: 'Bad Category Request' });
   } else if (err === 'invalid sort query') {
-    res.status(400).send({ msg: 'Bad Request' });
+    res.status(400).send({ msg: 'Bad Sort Request' });
   } else if (err === 'invalid order query') {
-    res.status(400).send({ msg: 'Bad Request' });
+    res.status(400).send({ msg: 'Bad Order Request' });
   } else {
     next(err);
   }

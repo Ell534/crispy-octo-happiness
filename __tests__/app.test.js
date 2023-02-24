@@ -78,6 +78,15 @@ describe('/api/reviews', () => {
         expect(reviews).toBeSortedBy('votes');
       });
   });
+  it('200: GET should return an empty array when a category that exists but has no reviews is selected', () => {
+    return request(app)
+      .get(`/api/reviews?category=children's games`)
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toEqual([])
+      });
+  });
   it('404: category does not exist when given a valid but non existent category', () => {
     return request(app)
       .get('/api/reviews?category=banana&sort_by=reviews.votes&order=asc')
@@ -90,16 +99,24 @@ describe('/api/reviews', () => {
     return request(app)
       .get('/api/reviews?category=social deduction&sort_by=banana&order=asc')
       .expect(400)
-      .then(({body}) => {
-        expect(body.msg).toBe('Bad Request')
-      })
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Sort Request');
+      });
   });
   it('400: order query is not valid', () => {
     return request(app)
       .get('/api/reviews?category=social deduction&sort_by=title&order=banana')
       .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Order Request');
+      });
+  });
+  it('400: category in query is invalid e.g 999', () => {
+    return request(app)
+      .get('/api/reviews?category=999')
+      .expect(400)
       .then(({body}) => {
-        expect(body.msg).toBe('Bad Request')
+        expect(body.msg).toBe('Bad Category Request')
       })
   });
 });

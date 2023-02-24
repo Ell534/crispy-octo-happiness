@@ -4,6 +4,7 @@ const seed = require('../db/seeds/seed');
 const data = require('../db/data/test-data/index');
 const db = require('../db/connection');
 const { toBeSortedBy, toBeSorted } = require('jest-sorted');
+const endpoints = require('../endpoints.json');
 
 beforeEach(() => {
   return seed(data);
@@ -379,9 +380,7 @@ describe('GET /api/users', () => {
 
 describe('DELETE /api/comments/:comment_id', () => {
   it('204: deletes the comment specified by comment_id', () => {
-    return request(app)
-      .delete('/api/comments/1')
-      .expect(204)
+    return request(app).delete('/api/comments/1').expect(204);
   });
   it('400: responds with bad request when id is not a number', () => {
     return request(app)
@@ -395,8 +394,19 @@ describe('DELETE /api/comments/:comment_id', () => {
     return request(app)
       .delete('/api/comments/999')
       .expect(404)
-      .then(({body}) => {
-        expect(body.msg).toBe('This ID does not exist')
-      })
+      .then(({ body }) => {
+        expect(body.msg).toBe('This ID does not exist');
+      });
+  });
+});
+
+describe('GET /api', () => {
+  it('200: responds with JSON describing all available endpoints', () => {
+    return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual(endpoints);
+      });
   });
 });

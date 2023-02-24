@@ -1,6 +1,7 @@
 const db = require('../db/connection');
 // const checkExists = require('../db/data/dataUtils');
 
+
 exports.getAllCategories = () => {
   return db.query(`SELECT * FROM categories;`).then(({ rows: categories }) => {
     return categories;
@@ -46,7 +47,7 @@ exports.getAllReviews = (
     return db
       .query(`SELECT * FROM categories WHERE slug = $1`, [category])
       .then((result) => {
-        const regex = /[\d]+/g
+        const regex = /[\d]+/g;
         if (result.rowCount === 0) {
           if (!regex.test(category)) {
             return Promise.reject('no category');
@@ -161,11 +162,16 @@ exports.patchReviewById = (inc_votes, review_id) => {
 };
 
 exports.deleteCommentById = (comment_id) => {
-  return db.query(`DELETE FROM comments
-  WHERE comment_id = $1 RETURNING *;`, [comment_id]).then(({rows}) => {
-    if (!rows.length) {
-      return Promise.reject('id not present')
-    }
-    return null
-  })
-}
+  return db
+    .query(
+      `DELETE FROM comments
+  WHERE comment_id = $1 RETURNING *;`,
+      [comment_id]
+    )
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject('id not present');
+      }
+      return null;
+    });
+};

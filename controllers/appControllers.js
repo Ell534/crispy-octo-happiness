@@ -1,4 +1,5 @@
 const {
+  getEndpointsJson,
   getAllCategories,
   getAllReviews,
   getAllUsers,
@@ -8,6 +9,13 @@ const {
   patchReviewById,
   deleteCommentById,
 } = require('../models/appModels');
+
+const endpoints = require('../endpoints.json')
+
+
+exports.fetchEndpointsJson = (req, res) => {
+  return res.status(200).send(endpoints);
+};
 
 exports.fetchAllCategories = (req, res, next) => {
   getAllCategories()

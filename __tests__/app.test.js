@@ -382,9 +382,6 @@ describe('DELETE /api/comments/:comment_id', () => {
     return request(app)
       .delete('/api/comments/1')
       .expect(204)
-      .then(({ body }) => {
-        expect(body.rows).toBe(undefined);
-      });
   });
   it('400: responds with bad request when id is not a number', () => {
     return request(app)

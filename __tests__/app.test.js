@@ -375,3 +375,10 @@ describe('GET /api/users', () => {
       });
   });
 });
+
+// describe('DELETE /api/comments/:comment_id', () => {
+//   it('204: deletes the comment specified by comment_id', () => {
+//     return request(app)
+//       .delete('/api/comments/')
+//   });
+// });

@@ -159,3 +159,13 @@ exports.patchReviewById = (inc_votes, review_id) => {
         });
     });
 };
+
+exports.deleteCommentById = (comment_id) => {
+  return db.query(`DELETE FROM comments
+  WHERE comment_id = $1 RETURNING *;`, [comment_id]).then(({rows}) => {
+    if (!rows.length) {
+      return Promise.reject('id not present')
+    }
+    return null
+  })
+}

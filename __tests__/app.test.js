@@ -13,7 +13,7 @@ afterAll(() => {
   return db.end();
 });
 
-describe('/api/categories', () => {
+describe('GET /api/categories', () => {
   it('200: GET responds with an array of all category objects with the properties slug and description', () => {
     return request(app)
       .get('/api/categories')
@@ -40,7 +40,7 @@ describe('/api/categories', () => {
   });
 });
 
-describe('/api/reviews', () => {
+describe('GET /api/reviews', () => {
   it('200: GET responds with an array of review objects sorted by descending date', () => {
     return request(app)
       .get('/api/reviews')
@@ -121,7 +121,7 @@ describe('/api/reviews', () => {
   });
 });
 
-describe('/api/reviews/:review_id', () => {
+describe('GET /api/reviews/:review_id', () => {
   it('200: GET responds with a review object with corresponding id from path', () => {
     return request(app)
       .get('/api/reviews/1')
@@ -152,7 +152,7 @@ describe('/api/reviews/:review_id', () => {
       .get('/api/reviews/20')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('This review ID does not exist');
+        expect(body.msg).toBe('This ID does not exist');
       });
   });
   it('400: responds with bad request when given an id that is not a number', () => {
@@ -165,7 +165,7 @@ describe('/api/reviews/:review_id', () => {
   });
 });
 
-describe('/api/reviews/:review_id/comments', () => {
+describe('GET /api/reviews/:review_id/comments', () => {
   it('200: GET responds with an array of comments for the given review id, sorted by most recent comment first', () => {
     return request(app)
       .get('/api/reviews/2/comments')
@@ -192,7 +192,7 @@ describe('/api/reviews/:review_id/comments', () => {
       .get('/api/reviews/20/comments')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('This review ID does not exist');
+        expect(body.msg).toBe('This ID does not exist');
       });
   });
   it('400: responds with bad request when given an id that is not a number  ', () => {
@@ -276,7 +276,7 @@ describe('POST: /api/reviews/:review_id/comments', () => {
       .send(requestBody)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('This review ID does not exist');
+        expect(body.msg).toBe('This ID does not exist');
       });
   });
 });
@@ -352,7 +352,7 @@ describe('PATCH /api/reviews/:review_id', () => {
       .send(requestBody)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('This review ID does not exist');
+        expect(body.msg).toBe('This ID does not exist');
       });
   });
 });
@@ -374,5 +374,29 @@ describe('GET /api/users', () => {
           });
         });
       });
+  });
+});
+
+describe('DELETE /api/comments/:comment_id', () => {
+  it('204: deletes the comment specified by comment_id', () => {
+    return request(app)
+      .delete('/api/comments/1')
+      .expect(204)
+  });
+  it('400: responds with bad request when id is not a number', () => {
+    return request(app)
+      .delete('/api/comments/banana')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Request');
+      });
+  });
+  it('404: responds with comment not found for a valid comment id that does not exist', () => {
+    return request(app)
+      .delete('/api/comments/999')
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe('This ID does not exist')
+      })
   });
 });

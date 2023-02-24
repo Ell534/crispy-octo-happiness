@@ -6,6 +6,7 @@ const {
   getCommentsByReviewId,
   postCommentByReviewId,
   patchReviewById,
+  deleteCommentById,
 } = require('../models/appModels');
 
 exports.fetchAllCategories = (req, res, next) => {
@@ -19,7 +20,7 @@ exports.fetchAllCategories = (req, res, next) => {
 };
 
 exports.fetchAllReviews = (req, res, next) => {
-  const { category, sort_by, order } = req.query
+  const { category, sort_by, order } = req.query;
   getAllReviews(category, sort_by, order)
     .then((reviews) => {
       res.status(200).send({ reviews });
@@ -79,6 +80,17 @@ exports.updateReviewById = (req, res, next) => {
   patchReviewById(inc_votes, review_id)
     .then((review) => {
       res.status(200).send({ review });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.removeCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  deleteCommentById(comment_id)
+    .then(() => {
+      res.status(204).send();
     })
     .catch((err) => {
       next(err);

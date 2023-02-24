@@ -9,6 +9,7 @@ const {
   fetchCommentsByReviewId,
   sendCommentByReviewId,
   updateReviewById,
+  removeCommentById,
 } = require('./controllers/appControllers');
 
 const {
@@ -33,6 +34,8 @@ app.get('/api/reviews/:review_id/comments', fetchCommentsByReviewId);
 app.post('/api/reviews/:review_id/comments', sendCommentByReviewId);
 
 app.patch('/api/reviews/:review_id', updateReviewById);
+
+app.delete('/api/comments/:comment_id', removeCommentById);
 
 app.use(handleCustomErrors);
 app.use(handlePSQL400s);

@@ -376,9 +376,13 @@ describe('GET /api/users', () => {
   });
 });
 
-// describe('DELETE /api/comments/:comment_id', () => {
-//   it('204: deletes the comment specified by comment_id', () => {
-//     return request(app)
-//       .delete('/api/comments/')
-//   });
-// });
+describe.skip('DELETE /api/comments/:comment_id', () => {
+  it('204: deletes the comment specified by comment_id', () => {
+    return request(app)
+      .delete('/api/comments/')
+      .expect(204)
+      .then(({body}) => {
+        expect(body).toBe(undefined);
+      })
+  });
+});

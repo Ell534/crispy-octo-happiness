@@ -142,6 +142,7 @@ describe('/api/reviews/:review_id', () => {
             category: 'euro game',
             owner: 'mallionaire',
             created_at: '2021-01-18T10:00:20.514Z',
+            comment_count: expect.any(Number),
           },
         ]);
       });

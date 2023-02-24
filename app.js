@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 
 const {
+  fetchEndpointsJson,
   fetchAllCategories,
   fetchAllReviews,
   fetchAllUsers,
@@ -20,6 +21,8 @@ const {
 } = require('./controllers/errorControllers');
 
 app.use(express.json());
+
+app.get('/api', fetchEndpointsJson);
 
 app.get('/api/categories', fetchAllCategories);
 

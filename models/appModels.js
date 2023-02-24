@@ -70,11 +70,12 @@ exports.getAllUsers = () => {
 exports.getReviewById = (review_id) => {
   return db
     .query(
-      `SELECT 
-    review_id, title, review_body, designer,
-    review_img_url, votes, category, owner, created_at
-    FROM reviews
-    WHERE review_id = $1;`,
+      `SELECT owner, title, reviews.review_id, category, review_img_url, review_body, reviews.created_at, reviews.votes, designer, CAST(COUNT(comment_id) AS INT) AS comment_count FROM reviews
+LEFT JOIN comments
+ON comments.review_id = reviews.review_id
+WHERE reviews.review_id = $1
+GROUP BY reviews.review_id
+ORDER BY reviews.created_at DESC;`,
       [review_id]
     )
     .then((result) => {

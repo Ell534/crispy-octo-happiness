@@ -84,7 +84,7 @@ describe('/api/reviews', () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        expect(reviews).toEqual([])
+        expect(reviews).toEqual([]);
       });
   });
   it('404: category does not exist when given a valid but non existent category', () => {
@@ -115,9 +115,9 @@ describe('/api/reviews', () => {
     return request(app)
       .get('/api/reviews?category=999')
       .expect(400)
-      .then(({body}) => {
-        expect(body.msg).toBe('Bad Category Request')
-      })
+      .then(({ body }) => {
+        expect(body.msg).toBe('Bad Category Request');
+      });
   });
 });
 

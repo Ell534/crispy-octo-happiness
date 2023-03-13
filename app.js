@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 const {
   fetchEndpointsJson,
@@ -19,6 +20,8 @@ const {
   handleCustomErrors,
   handlePSQL400s,
 } = require('./controllers/errorControllers');
+
+app.use(cors());
 
 app.use(express.json());
 

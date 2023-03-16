@@ -70,6 +70,10 @@
   "POST /api/reviews/review_id/comments": {
     "description": "adds a comment to the specified reviews and responds with the posted comment",
     "queries": [],
+    "exampleRequestBody" : {
+      "username" : "mallionaire",
+      "body" : "This game is fantastic!"
+    },
     "exampleResponse": {
       "comment_id": 7,
       "body": "This game is fantastic!",

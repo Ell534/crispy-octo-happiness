@@ -80,8 +80,11 @@
     }
   },
   "PATCH /api/reviews/:review_id": {
-    "description": "updates the number of votes for the specified review and responds with the review",
+    "description": "updates the number of votes specified in the request body for the specified review and responds with the review",
     "queries": [],
+    "exampleRequestBody": {
+      "inc_votes": 1
+    },
     "exampleResponse": {
       "review_id": 1,
       "title": "Agricola",

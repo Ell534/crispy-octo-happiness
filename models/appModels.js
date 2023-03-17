@@ -1,7 +1,6 @@
 const db = require('../db/connection');
 // const checkExists = require('../db/data/dataUtils');
 
-
 exports.getAllCategories = () => {
   return db.query(`SELECT * FROM categories;`).then(({ rows: categories }) => {
     return categories;
@@ -31,6 +30,7 @@ exports.getAllReviews = (
       'reviews.created_at',
       'reviews.votes',
       'designer',
+      'comment_count',
     ].includes(sort_by)
   ) {
     return Promise.reject('invalid sort query');
